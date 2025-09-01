@@ -1,0 +1,1 @@
+Attempt is made to learn C++ for HFT
