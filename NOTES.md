@@ -72,3 +72,26 @@ auto ptr = std::make_shared<Order>(OrderType::GoodTillCancel, 123, Side::Buy, 10
 #### Summary
 
 - Use `std::make_shared` to create and manage objects with `std::shared_ptr` easily and
+
+### Understanding `auto&`
+
+auto lets the compiler automatically deduce the type of a variable.
+& makes it a reference to the deduced type.
+
+auto& is commonly used in range-based for loops or structured bindings to avoid copying and to work directly with the original object.
+
+
+
+
+### Fill and Kill Order
+
+- Fill and Kill is an order type used in trading systems.
+
+Fill and Kill means:
+
+- The order will be filled immediately as much as possible, and any unfilled portion is canceled right away.
+
+- It does not stay on the orderbook waiting for future matches.
+
+- Example:
+If you place a Fill and Kill order to buy 100 shares, but only 60 are available, you get 60 shares and the remaining 40 are canceled.
