@@ -1,7 +1,8 @@
 
-Some C++ Notes for myself (Written then refined with ChatGPT)
+## Some C++ Notes for myself 
+Written then refined with ChatGPT
 
-This section explains key C++ concepts:
+## Pointers, References and Aliases
 - The asterisk (`*`) denotes pointers.
 - The ampersand (`&`) denotes references.
 - The `using` keyword is used to create type aliases.
@@ -34,21 +35,10 @@ using IntPtr = int*;
 IntPtr anotherPtr = &value;
 ```
 
-### Understanding `std::shared_ptr` and `OrderPointer`
+### Understanding `std::shared_ptr`
 
 - `std::shared_ptr` is a smart pointer in C++ that manages the lifetime of a dynamically allocated object.
-- Multiple `shared_ptr`s can own the same object; the object is deleted automatically when the last `shared_ptr` owning it is destroyed.
-
-#### Why use `OrderPointer`?
-
-- `OrderPointer` is a type alias for `std::shared_ptr<Order>`.
-- It allows you to safely share ownership of `Order` objects across your code (for example, in containers or between functions).
-- You don’t need to manually delete the object; memory management is automatic.
-
-#### Summary
-
-- Use `shared_ptr` when multiple parts of your program need to share and manage the same object’s lifetime.
-- `OrderPointer` makes your code cleaner and safer by handling memory for `Order` objects.
+- Multiple `shared_ptr` can own the same object; the object is deleted automatically when the last `shared_ptr` owning it is destroyed.
 
 ### Understanding `std::make_shared`
 
@@ -71,7 +61,7 @@ auto ptr = std::make_shared<Order>(OrderType::GoodTillCancel, 123, Side::Buy, 10
 
 #### Summary
 
-- Use `std::make_shared` to create and manage objects with `std::shared_ptr` easily and
+- Use `std::make_shared` to create and manage objects with `std::shared_ptr` easily
 
 ### Understanding `auto&`
 
@@ -82,8 +72,8 @@ auto& is commonly used in range-based for loops or structured bindings to avoid 
 
 
 
-
-### Fill and Kill Order
+### Trading Concepts
+#### Fill and Kill Order
 
 - Fill and Kill is an order type used in trading systems.
 
