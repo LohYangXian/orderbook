@@ -23,9 +23,40 @@ private:
         OrderPointers::iterator location_;
     };
 
+    struct LevelData
+    {
+        Quantity quantity_{ };
+        Quantity count_{ };
+
+        enum class Action
+        {
+            Add,
+            Remove,
+            Match
+        };
+    };
+
+    std::unordered_map<Price, LevelData> data_;
     std::map<Price, OrderPointers, std:: greater<Price>> bids_;
     std::map<Price, OrderPointers, std::less<Price>> asks_;
     std::unordered_map<OrderId, OrderEntry> orders_;
+    mutable std::mutex ordersMutex_;
+    std::thread ordersPruneThread_;
+    std::condition_variable shutdownConditionVariable_;
+    std::atomic<bool> shutdown_{ false };
+
+
+    void PruneGoodForDayOrders();
+
+    void CancelOrders(OrderIds orderIds);
+    void CancelOrderInternal(OrderId orderId);
+
+    void OnOrderCancelled(OrderPointer order);
+    void OnOrderAdded(OrderPointer order);
+    void OnOrderMatched(Price price, Quantity quantity, bool isFullyFilled);
+    void UpdateLevelData(Price price, Quantity quantity, LevelData::Action action);
+
+    bool CanFullyFill(Side side, Price price, Quantity quantity) const;
 
     /**
      * @brief Determines if an order can be matched based on the given side and price.
@@ -42,16 +73,64 @@ private:
 
 public:
 
+    /**
+     * @brief Default constructor for Orderbook.
+     *
+     * Initializes the order book and any background resources
+     * (e.g., threads, data structures).
+     */
     Orderbook();
+
+    /**
+     * @brief Copy constructor (deleted).
+     *
+     * Prevents copying of the Orderbook object.
+     * Copying is disabled because the class manages resources
+     * such as threads, mutexes, and condition variables
+     * that cannot be safely duplicated.
+     */
     Orderbook(const Orderbook&) = delete;
+
+    /**
+     * @brief Copy assignment operator (deleted).
+     *
+     * Prevents assigning one Orderbook to another.
+     * Disabled for the same reasons as the copy constructor.
+     */
     void operator=(const Orderbook&) = delete;
+
+    /**
+     * @brief Move constructor (deleted).
+     *
+     * Prevents moving of the Orderbook object.
+     * Moving is disabled because transferring ownership of
+     * active threads, mutexes, and synchronization primitives
+     * could lead to undefined behavior.
+     */
     Orderbook(Orderbook&&) = delete;
+
+    /**
+     * @brief Move assignment operator (deleted).
+     *
+     * Prevents move-assignment of the Orderbook object.
+     * Disabled to ensure the integrity of resources owned
+     * by the class.
+     */
     void operator=(Orderbook&&) = delete;
+
+    /**
+     * @brief Destructor for Orderbook.
+     *
+     * Cleans up resources before destruction.
+     * Typically ensures the background thread is stopped,
+     * the shutdown flag is set, and synchronization objects
+     * are properly released.
+     */
     ~Orderbook();
     
     Trades AddOrder(OrderPointer order);
     void CancelOrder(OrderId orderId);
     Trades ModifyOrder(OrderModify order);
     std::size_t Size() const;
-    OrderbookLevelInfos GetLevelInfos() const;
+    OrderbookLevelInfos GetOrderInfos() const;
 };
