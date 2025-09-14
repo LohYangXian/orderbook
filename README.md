@@ -11,3 +11,14 @@
 ``` bash 
 ./orderbook
 ```
+
+### To test locally (VS Code)
+
+- You need tasks.json with the customised configuration
+
+`Shift` + `Cmd` + `B`
+- Select `Build Orderbook Tests`
+
+``` bash
+./runTests
+```
