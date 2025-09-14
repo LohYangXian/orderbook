@@ -21,6 +21,29 @@
             "problemMatcher": [
                 "$gcc"
             ]
+        },
+         {
+            "label": "Build Orderbook Tests",
+            "type": "shell",
+            "command": "/usr/bin/clang++",
+            "args": [
+                "-std=c++20",
+                "-Wall",
+                "-Wextra",
+                "-pthread",                                       // required by GTest
+                "${workspaceFolder}/OrderbookTest/pch.cpp",
+                "${workspaceFolder}/OrderbookTest/test.cpp",
+                "-I${workspaceFolder}",                           // include path for your project headers
+                "-isystem", "/opt/homebrew/include",             // include path for GTest headers
+                "/opt/homebrew/lib/libgtest.a",                  // link GTest
+                "/opt/homebrew/lib/libgtest_main.a",             // link GTest main
+                "-o",
+                "${workspaceFolder}/runTests"      // output executable
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }
